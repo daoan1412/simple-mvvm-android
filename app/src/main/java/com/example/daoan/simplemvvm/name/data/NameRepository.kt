@@ -2,7 +2,6 @@ package com.example.daoan.simplemvvm.name.data
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 
 interface NameRepository {
     fun getNames(): LiveData<List<Name>>
