@@ -11,13 +11,12 @@ import kotlinx.coroutines.launch
 
 class UserViewModel(private val repo: UserRepository) : ViewModel() {
 
-    val allNames: LiveData<List<User>> = repo.getAllUsers()
+    val allUsers: LiveData<List<User>> = repo.getAllUsers()
 
     fun insertName(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.insertUser(user)
         }
     }
-
 
 }

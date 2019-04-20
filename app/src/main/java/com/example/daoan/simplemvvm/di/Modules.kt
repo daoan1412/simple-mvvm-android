@@ -11,8 +11,6 @@ import org.koin.dsl.module.module
 
 val applicationModule = module(override = true) {
     single { Room.inMemoryDatabaseBuilder(androidContext(), UserDatabase::class.java).build() }
-    single<UserRepository> {
-        UserRepositoryImpl(get())
-    }
+    single<UserRepository> { UserRepositoryImpl(get()) }
     viewModel { UserViewModel(get()) }
 }

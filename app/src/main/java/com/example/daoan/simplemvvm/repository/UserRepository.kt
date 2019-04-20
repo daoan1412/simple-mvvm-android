@@ -28,5 +28,4 @@ class UserRepositoryImpl(private val database: UserDatabase) : UserRepository {
     override suspend fun deleteUsers(vararg user: User) {
         userDao.deleteUsers(*user)
     }
-
 }

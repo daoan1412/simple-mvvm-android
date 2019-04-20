@@ -7,7 +7,8 @@ import com.example.daoan.simplemvvm.R
 import com.example.daoan.simplemvvm.app.inflate
 import kotlinx.android.synthetic.main.name_item_view_holder.view.*
 
-class UserRecyclerViewAdapter(private val usernames: List<String>) : RecyclerView.Adapter<UserRecyclerViewAdapter.ViewHolder>() {
+class UserRecyclerViewAdapter(val usernames: ArrayList<String>) :
+    RecyclerView.Adapter<UserRecyclerViewAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent.inflate(R.layout.name_item_view_holder))
     }
@@ -19,7 +20,13 @@ class UserRecyclerViewAdapter(private val usernames: List<String>) : RecyclerVie
         holder.bind(username)
     }
 
-   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    fun setData(usernames: ArrayList<String>) {
+        this.usernames.clear()
+        this.usernames.addAll(usernames)
+        notifyDataSetChanged()
+    }
+
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(username: String) {
             itemView.nameItem.text = username
         }
