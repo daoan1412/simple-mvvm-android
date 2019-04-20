@@ -13,9 +13,15 @@ class UserViewModel(private val repo: UserRepository) : ViewModel() {
 
     val allUsers: LiveData<List<User>> = repo.getAllUsers()
 
-    fun insertName(user: User) {
+    fun insertUser(user: User) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.insertUser(user)
+        }
+    }
+
+    fun deleteUser(uid: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.deleteUser(uid)
         }
     }
 

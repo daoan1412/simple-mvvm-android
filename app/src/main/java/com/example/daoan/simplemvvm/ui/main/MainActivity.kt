@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.daoan.simplemvvm.app.hideKeyboard
 
 
-class MainActivity : AppCompatActivity(), ItemDragListener {
+class MainActivity : AppCompatActivity(), ItemUserActionsListener {
 
     private val userViewModel: UserViewModel by viewModel()
     private val recyclerAdapter = UserRecyclerViewAdapter(arrayListOf(), this)
@@ -33,10 +33,9 @@ class MainActivity : AppCompatActivity(), ItemDragListener {
 
     private fun subscribeToNavigationChanges(userViewModel: UserViewModel) {
         userViewModel.allUsers.observe(this, Observer { allUsers ->
-            val usernames = allUsers.map { user -> user.username } as ArrayList<String>
-            recyclerAdapter.setData(usernames)
-            if (usernames.size > 1) {
-                userRecyclerView.scrollToPosition(usernames.size - 1)
+            recyclerAdapter.setData(allUsers as ArrayList<User>)
+            if (allUsers.size > 1) {
+                userRecyclerView.scrollToPosition(allUsers.size - 1)
             }
         }
         )
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity(), ItemDragListener {
 
     private fun setUpInsert() {
         insertBtn.setOnClickListener {
-            userViewModel.insertName(User(username = userNameInput.text.toString()))
+            userViewModel.insertUser(User(username = userNameInput.text.toString()))
             userNameInput.setText("")
             window.decorView.hideKeyboard()
             window.decorView.clearFocus()
@@ -78,5 +77,7 @@ class MainActivity : AppCompatActivity(), ItemDragListener {
         itemTouchHelper.startDrag(viewHolder)
     }
 
-
+    override fun onItemSwipe(uid: Int) {
+        userViewModel.deleteUser(uid)
+    }
 }

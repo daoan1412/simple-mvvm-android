@@ -9,7 +9,7 @@ import com.example.daoan.simplemvvm.data.model.User
 interface UserRepository {
     fun getAllUsers(): LiveData<List<User>>
     suspend fun insertUser(user: User)
-    suspend fun deleteUsers(vararg user: User)
+    suspend fun deleteUser(uid: Int)
 }
 
 class UserRepositoryImpl(private val database: UserDatabase) : UserRepository {
@@ -25,7 +25,7 @@ class UserRepositoryImpl(private val database: UserDatabase) : UserRepository {
     }
 
     @WorkerThread
-    override suspend fun deleteUsers(vararg user: User) {
-        userDao.deleteUsers(*user)
+    override suspend fun deleteUser(uid: Int) {
+        userDao.deleteUser(uid)
     }
 }
