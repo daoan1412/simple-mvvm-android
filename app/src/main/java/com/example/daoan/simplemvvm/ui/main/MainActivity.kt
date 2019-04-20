@@ -1,37 +1,41 @@
-package com.example.daoan.simplemvvm
+package com.example.daoan.simplemvvm.ui.main
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.daoan.simplemvvm.name.adapter.NameRecyclerViewAdapter
-import com.example.daoan.simplemvvm.name.data.Name
-import com.example.daoan.simplemvvm.name.viewmodel.NameViewModel
+import com.example.daoan.simplemvvm.R
+import com.example.daoan.simplemvvm.data.model.User
+import com.example.daoan.simplemvvm.viewmodel.UserViewModel
 import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : AppCompatActivity() {
-    private val nameViewModel: NameViewModel by viewModel()
+    private val userViewModel: UserViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        nameRecyclerView.layoutManager = LinearLayoutManager(this)
-        nameRecyclerView.adapter = NameRecyclerViewAdapter(mutableListOf())
+        userRecyclerView.layoutManager = LinearLayoutManager(this)
+        userRecyclerView.adapter = UserRecyclerViewAdapter(mutableListOf())
 
-        nameViewModel.allNames.observe(this, Observer<List<Name>> { allNames: List<Name> ->
-            nameRecyclerView.adapter = NameRecyclerViewAdapter(allNames)
+        userViewModel.allNames.observe(this, Observer<List<User>> { allUsers: List<User> ->
+            userRecyclerView.adapter =
+                UserRecyclerViewAdapter(allUsers.map { user ->
+                    user.username
+                })
         }
         )
 
         insertBtn.setOnClickListener {
-            nameViewModel.insertName(Name(name = nameInput.text.toString()))
+            userViewModel.insertName(User(username = userNameInput.text.toString()))
+            userNameInput.setText("")
             closeKeyboard(currentFocus)
+            window.decorView.clearFocus()
         }
     }
 

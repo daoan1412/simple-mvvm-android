@@ -1,4 +1,4 @@
-package com.example.daoan.simplemvvm
+package com.example.daoan.simplemvvm.app
 
 import android.app.Application
 import com.example.daoan.simplemvvm.di.applicationModule
