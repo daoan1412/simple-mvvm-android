@@ -37,11 +37,15 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
         setUpRecyclerView()
         setUpInsert()
         setUpItemTouchHelper()
+    }
+
+    override fun onStart() {
+        super.onStart()
         setUpObserver()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onStop() {
+        super.onStop()
         disposable.clear()
     }
 
