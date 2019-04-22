@@ -7,6 +7,7 @@ import com.example.daoan.simplemvvm.repository.TaskRepository
 import io.reactivex.Completable
 import io.reactivex.Flowable
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -20,6 +21,7 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
 
     fun update(tasks: List<Task>) {
         viewModelScope.launch(Dispatchers.IO) {
+            delay(300)
             repo.update(tasks)
         }
     }
