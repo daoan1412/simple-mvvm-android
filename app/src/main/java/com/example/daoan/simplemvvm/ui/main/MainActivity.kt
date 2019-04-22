@@ -16,6 +16,8 @@ import com.example.daoan.simplemvvm.app.hideKeyboard
 import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.viewmodel.TaskViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 
 class MainActivity : AppCompatActivity(), ItemUserActionsListener {
@@ -23,22 +25,34 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
     private val taskViewModel: TaskViewModel by viewModel()
     private val recyclerAdapter = TaskRecyclerViewAdapter(arrayListOf(), this)
     lateinit var itemTouchHelper: ItemTouchHelper
+    private val disposable = CompositeDisposable()
 
-    @SuppressLint("CheckResult")
+    companion object {
+        private val TAG = MainActivity::class.java.simpleName
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setUpRecyclerView()
         setUpInsert()
         setUpItemTouchHelper()
-        taskViewModel.tasks.observeOn(AndroidSchedulers.mainThread())
-            .subscribe {
-            tasks ->
+        setUpObserver()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposable.clear()
+    }
+
+    @SuppressLint("CheckResult")
+    private fun setUpObserver() {
+        disposable.add(taskViewModel.tasks
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe { tasks ->
                 recyclerAdapter.setData(tasks as ArrayList<Task>)
-                if (tasks.size > 1) {
-                    userRecyclerView.scrollToPosition(tasks.size - 1)
-                }
-        }
+            })
     }
 
     private fun setUpRecyclerView() {
@@ -66,9 +80,14 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
 
     private fun setUpInsert() {
         insertBtn.setOnClickListener {
-            val text =  userNameInput.text.toString()
-            taskViewModel.insert(Task(title = text))
+            val text = userNameInput.text.toString()
             userNameInput.setText("")
+            taskViewModel.insert(Task(title = text))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    recyclerAdapter.scrollToTop(userRecyclerView)
+                }
             window.decorView.hideKeyboard()
             window.decorView.clearFocus()
         }
@@ -79,10 +98,10 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
     }
 
     override fun onItemSwipe(task: Task) {
-      taskViewModel.delete(task)
+        taskViewModel.delete(task)
     }
 
     override fun onItemReorder(tasks: List<Task>) {
-       taskViewModel.update(tasks)
+        taskViewModel.update(tasks)
     }
 }

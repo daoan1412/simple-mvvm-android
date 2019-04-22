@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.daoan.simplemvvm.R
 import com.example.daoan.simplemvvm.app.inflate
 import com.example.daoan.simplemvvm.data.model.Task
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.name_item_view_holder.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -34,6 +35,12 @@ class TaskRecyclerViewAdapter(
         this.tasks.clear()
         this.tasks.addAll(tasks)
         notifyDataSetChanged()
+    }
+
+    fun scrollToTop(recyclerView: RecyclerView) {
+        if (tasks.size > 2) {
+            recyclerView.scrollToPosition(tasks.size)
+        }
     }
 
     override fun onItemMove(recyclerView: RecyclerView, fromPosition: Int, toPosition: Int): Boolean {
