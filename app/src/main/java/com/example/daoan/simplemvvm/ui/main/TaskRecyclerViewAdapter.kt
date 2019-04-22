@@ -1,5 +1,6 @@
 package com.example.daoan.simplemvvm.ui.main
 
+import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -38,19 +39,26 @@ class TaskRecyclerViewAdapter(
     override fun onItemMove(recyclerView: RecyclerView, fromPosition: Int, toPosition: Int): Boolean {
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
-                Collections.swap(tasks, i, i + 1)
+                reOrderTask(tasks, i, i + 1)
             }
         } else {
             for (i in fromPosition downTo toPosition + 1) {
-                Collections.swap(tasks, i, i - 1)
+                reOrderTask(tasks, i, i - 1)
             }
         }
         notifyItemMoved(fromPosition, toPosition)
         return true
     }
 
+    private fun reOrderTask(tasks: ArrayList<Task>, id1: Int, id2: Int) {
+        Collections.swap(tasks, id1, id2)
+        val temp = tasks[id1].order
+        tasks[id1].order = tasks[id2].order
+        tasks[id2].order = temp
+    }
+
     override fun onItemDismiss(viewHolder: RecyclerView.ViewHolder, position: Int) {
-//        itemUserActionListener.onItemSwipe(tasks.get(position).id)
+        itemUserActionListener.onItemSwipe(tasks[position])
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ItemSelectedListener {
@@ -65,6 +73,7 @@ class TaskRecyclerViewAdapter(
 
         override fun onItemCleared() {
             itemView.listItemContainer.setBackgroundColor(0)
+            itemUserActionListener.onItemReorder(tasks)
         }
 
         fun bind(title: String) {

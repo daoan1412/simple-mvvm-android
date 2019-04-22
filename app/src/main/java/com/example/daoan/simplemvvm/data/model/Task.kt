@@ -7,8 +7,9 @@ import java.util.*
 open class Task(
     @PrimaryKey var id: String = UUID.randomUUID().toString(),
     var title: String,
+    var order: Long = System.currentTimeMillis(),
     var isCompleted: Boolean = false
 ) : RealmObject() {
-    constructor() : this("", "", false)
+    constructor() : this("", "", 0, false)
 }
 

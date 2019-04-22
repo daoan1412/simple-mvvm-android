@@ -19,7 +19,7 @@ class BaseApplication : Application() {
         val config = RealmConfiguration.Builder()
             .name("myrealm.realm")
             .schemaVersion(1)
-            .inMemory()
+//            .inMemory()
             .build()
         Realm.setDefaultConfiguration(config)
     }

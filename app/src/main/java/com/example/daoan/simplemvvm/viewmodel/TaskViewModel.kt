@@ -13,9 +13,21 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
     val tasks: Flowable<List<Task>> = repo.getAllTasks()
 
     fun insert(task: Task) {
-       viewModelScope.launch(Dispatchers.IO) {
-           repo.insert(task)
-       }
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.insert(task)
+        }
+    }
+
+    fun update(tasks: List<Task>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.update(tasks)
+        }
+    }
+
+    fun delete(task: Task) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.delete(task)
+        }
     }
 
 }

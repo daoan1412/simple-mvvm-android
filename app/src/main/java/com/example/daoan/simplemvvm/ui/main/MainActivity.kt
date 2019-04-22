@@ -38,8 +38,6 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
                 if (tasks.size > 1) {
                     userRecyclerView.scrollToPosition(tasks.size - 1)
                 }
-                Log.d("skt", tasks.map { task -> task.title }.toString())
-
         }
     }
 
@@ -80,6 +78,11 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
         itemTouchHelper.startDrag(viewHolder)
     }
 
-    override fun onItemSwipe(uid: Int) {
+    override fun onItemSwipe(task: Task) {
+      taskViewModel.delete(task)
+    }
+
+    override fun onItemReorder(tasks: List<Task>) {
+       taskViewModel.update(tasks)
     }
 }
