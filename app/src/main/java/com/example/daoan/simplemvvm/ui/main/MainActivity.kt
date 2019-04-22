@@ -108,4 +108,8 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
     override fun onItemReorder(tasks: List<Task>) {
         taskViewModel.update(tasks)
     }
+
+    override fun onItemChecked(task: Task) {
+        taskViewModel.update(listOf(task))
+    }
 }

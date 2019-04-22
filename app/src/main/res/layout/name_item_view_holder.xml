@@ -8,10 +8,11 @@
     <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content" android:id="@+id/nameItem" tools:text="Name Item"
-            android:layout_marginStart="16dp"
             android:textSize="18sp" android:textColor="@android:color/background_dark"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/complete"
+            android:layout_marginStart="16dp"/>
 
     <ImageView
             android:id="@+id/handle"
@@ -20,6 +21,14 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBaseline_toBaselineOf="@id/complete"
             app:layout_constraintBottom_toBottomOf="parent"
-    />
+            android:tint="@color/colorPrimary"/>
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/complete" app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="16dp" android:buttonTint="@color/colorPrimary"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

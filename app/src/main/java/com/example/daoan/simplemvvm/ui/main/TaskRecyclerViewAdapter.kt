@@ -1,6 +1,5 @@
 package com.example.daoan.simplemvvm.ui.main
 
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -9,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.daoan.simplemvvm.R
 import com.example.daoan.simplemvvm.app.inflate
 import com.example.daoan.simplemvvm.data.model.Task
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.name_item_view_holder.view.*
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,7 +26,7 @@ class TaskRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val task = tasks[position]
-        holder.bind(task.title)
+        holder.bind(task)
     }
 
     fun setData(tasks: ArrayList<Task>) {
@@ -69,27 +67,22 @@ class TaskRecyclerViewAdapter(
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ItemSelectedListener {
-        override fun onItemSelected() {
-            itemView.listItemContainer.setBackgroundColor(
-                ContextCompat.getColor(
-                    itemView.context,
-                    R.color.selectedItem
-                )
-            )
-        }
-
         override fun onItemCleared() {
-            itemView.listItemContainer.setBackgroundColor(0)
             itemUserActionListener.onItemReorder(tasks)
         }
 
-        fun bind(title: String) {
-            itemView.nameItem.text = title
+        fun bind(task: Task) {
+            itemView.complete.isChecked = task.isCompleted
+            itemView.nameItem.text = task.title
             itemView.handle.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     itemUserActionListener.onItemDrag(this)
                 }
                 false
+            }
+            itemView.complete.setOnClickListener {
+                task.isCompleted = !task.isCompleted
+                itemUserActionListener.onItemChecked(task)
             }
         }
     }
