@@ -23,8 +23,6 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
 
     fun update(tasks: List<Task>) {
         viewModelScope.launch(Dispatchers.IO) {
-            // complete animation
-            delay(300)
             repo.update(tasks)
         }
     }

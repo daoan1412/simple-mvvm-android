@@ -13,10 +13,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.daoan.simplemvvm.app.hideKeyboard
 import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.viewmodel.TaskViewModel
-import io.reactivex.Single
+import io.reactivex.Completable
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.PublishSubject
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
@@ -26,6 +29,9 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
     private val recyclerAdapter = TaskRecyclerViewAdapter(arrayListOf(), this)
     lateinit var itemTouchHelper: ItemTouchHelper
     private val disposable = CompositeDisposable()
+    private val checkedItemSubject = PublishSubject.create<Task>()
+    private val checkedItem: Observable<Task>
+        get() = checkedItemSubject
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
@@ -63,6 +69,17 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
                     recyclerAdapter.setData(tasks)
                 }
             })
+
+        disposable.add(
+            checkedItem
+                .debounce(300, TimeUnit.MILLISECONDS)
+                .switchMap { task ->
+                    Observable.fromCallable {
+                        taskViewModel.update(listOf(task))
+                    }
+                }
+                .subscribe()
+        )
     }
 
     private fun setUpRecyclerView() {
@@ -111,6 +128,6 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
     }
 
     override fun onItemChecked(task: Task) {
-        taskViewModel.update(listOf(task))
+        checkedItemSubject.onNext(task)
     }
 }
