@@ -3,7 +3,6 @@ package com.example.daoan.simplemvvm.ui.main
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.daoan.simplemvvm.R
 import com.example.daoan.simplemvvm.app.inflate
@@ -37,7 +36,7 @@ class TaskRecyclerViewAdapter(
 
     fun scrollToTop(recyclerView: RecyclerView) {
         if (tasks.size > 2) {
-            recyclerView.scrollToPosition(tasks.size)
+            recyclerView.scrollToPosition(tasks.size - 1)
         }
     }
 

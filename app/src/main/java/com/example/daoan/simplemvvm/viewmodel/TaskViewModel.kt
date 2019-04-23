@@ -15,12 +15,15 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
 
     val tasks: Flowable<List<Task>> = repo.getAllTasks()
 
-    fun insert(task: Task): Completable {
-        return repo.insert(task)
+    fun insert(task: Task) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.insert(task)
+        }
     }
 
     fun update(tasks: List<Task>) {
         viewModelScope.launch(Dispatchers.IO) {
+            // complete animation
             delay(300)
             repo.update(tasks)
         }

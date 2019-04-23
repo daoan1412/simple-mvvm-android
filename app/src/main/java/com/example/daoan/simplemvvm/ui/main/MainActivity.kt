@@ -3,8 +3,6 @@ package com.example.daoan.simplemvvm.ui.main
 import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.daoan.simplemvvm.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -15,9 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.daoan.simplemvvm.app.hideKeyboard
 import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.viewmodel.TaskViewModel
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity(), ItemUserActionsListener {
@@ -53,9 +53,15 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
     private fun setUpObserver() {
         disposable.add(taskViewModel.tasks
             .subscribeOn(Schedulers.io())
+            .map { tasks -> tasks as ArrayList<Task> }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe { tasks ->
-                recyclerAdapter.setData(tasks as ArrayList<Task>)
+                if (tasks.size > recyclerAdapter.tasks.size) {
+                    recyclerAdapter.setData(tasks)
+                    recyclerAdapter.scrollToTop(userRecyclerView)
+                } else {
+                    recyclerAdapter.setData(tasks)
+                }
             })
     }
 
@@ -87,11 +93,6 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
             val text = userNameInput.text.toString()
             userNameInput.setText("")
             taskViewModel.insert(Task(title = text))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe {
-                    recyclerAdapter.scrollToTop(userRecyclerView)
-                }
             window.decorView.hideKeyboard()
             window.decorView.clearFocus()
         }

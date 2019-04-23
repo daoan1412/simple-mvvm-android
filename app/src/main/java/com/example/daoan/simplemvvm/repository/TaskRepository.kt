@@ -9,15 +9,14 @@ import io.reactivex.Flowable
 interface TaskRepository {
     fun getAllTasks(): Flowable<List<Task>>
     suspend fun update(tasks: List<Task>)
-    fun insert(task: Task): Completable
+    suspend fun insert(task: Task)
     suspend fun delete(task: Task)
 }
 
 class TaskRepositoryImpl : TaskRepository {
-    override fun insert(task: Task): Completable {
-        return Completable.fromAction{
-            task.save()
-        }
+    @WorkerThread
+    override suspend fun insert(task: Task) {
+        task.save()
     }
 
     @WorkerThread
