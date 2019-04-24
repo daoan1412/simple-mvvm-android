@@ -34,10 +34,6 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
         get() = checkedItemSubject
     lateinit var searchItem: MenuItem
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,6 +42,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
         setHasOptionsMenu(true)
         return rootView
     }
+
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpRecyclerView()

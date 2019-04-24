@@ -1,28 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_height="match_parent"
-              android:layout_width="match_parent"
-              android:orientation="vertical">
-    <com.google.android.material.appbar.AppBarLayout android:layout_width="match_parent"
-                                                     android:layout_height="wrap_content">
-
-        <androidx.appcompat.widget.Toolbar
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                android:minHeight="?attr/actionBarSize"
-                android:id="@+id/toolbar"
-                android:elevation="4dp"
-        />
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <fragment
-            android:name="androidx.navigation.fragment.NavHostFragment"
+<androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/draw_layout"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:layout_width="match_parent" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" app:navGraph="@navigation/nav_graph"
-            app:defaultNavHost="true"
-            android:id="@+id/navHostFragment"/>
+            android:orientation="vertical">
+        <com.google.android.material.appbar.AppBarLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-</LinearLayout>
+            <androidx.appcompat.widget.Toolbar
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/colorPrimary"
+                    android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                    android:minHeight="?attr/actionBarSize"
+                    android:id="@+id/toolbar"
+                    android:elevation="4dp"
+            />
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <fragment
+                android:name="androidx.navigation.fragment.NavHostFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" app:navGraph="@navigation/nav_graph"
+                app:defaultNavHost="true"
+                android:id="@+id/navHostFragment"/>
+
+    </LinearLayout>
+
+    <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
+            android:layout_gravity="start"
+            android:fitsSystemWindows="true"
+            app:menu="@menu/menu_navigation"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
+</androidx.drawerlayout.widget.DrawerLayout>
