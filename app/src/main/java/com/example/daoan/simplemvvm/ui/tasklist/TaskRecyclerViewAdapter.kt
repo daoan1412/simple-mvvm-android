@@ -1,4 +1,4 @@
-package com.example.daoan.simplemvvm.ui.main
+package com.example.daoan.simplemvvm.ui.tasklist
 
 import android.view.MotionEvent
 import android.view.View
@@ -9,13 +9,13 @@ import com.example.daoan.simplemvvm.app.inflate
 import com.example.daoan.simplemvvm.data.model.Task
 import kotlinx.android.synthetic.main.name_item_view_holder.view.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 class TaskRecyclerViewAdapter(
     val tasks: ArrayList<Task>,
     private val itemUserActionListener: ItemUserActionsListener
 ) :
-    RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder>(), ItemTouchHelperListener {
+    RecyclerView.Adapter<TaskRecyclerViewAdapter.ViewHolder>(),
+    ItemTouchHelperListener {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(parent.inflate(R.layout.name_item_view_holder))
@@ -65,7 +65,8 @@ class TaskRecyclerViewAdapter(
         itemUserActionListener.onItemSwipe(tasks[position])
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), ItemSelectedListener {
+    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+        ItemSelectedListener {
         override fun onItemCleared() {
             itemUserActionListener.onItemReorder(tasks)
         }

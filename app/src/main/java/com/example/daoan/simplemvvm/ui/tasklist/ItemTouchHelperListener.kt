@@ -1,4 +1,4 @@
-package com.example.daoan.simplemvvm.ui.main
+package com.example.daoan.simplemvvm.ui.tasklist
 
 import androidx.recyclerview.widget.RecyclerView
 
