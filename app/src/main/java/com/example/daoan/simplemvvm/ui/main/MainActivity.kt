@@ -1,26 +1,31 @@
 package com.example.daoan.simplemvvm.ui.main
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.daoan.simplemvvm.R
-import kotlinx.android.synthetic.main.activity_main.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
+import android.view.View.OnAttachStateChangeListener
+import android.view.inputmethod.EditorInfo
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.daoan.simplemvvm.R
 import com.example.daoan.simplemvvm.app.hideKeyboard
 import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.viewmodel.TaskViewModel
-import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
+import kotlinx.android.synthetic.main.activity_main.*
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity(), ItemUserActionsListener {
@@ -32,6 +37,7 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
     private val checkedItemSubject = PublishSubject.create<Task>()
     private val checkedItem: Observable<Task>
         get() = checkedItemSubject
+    lateinit var searchItem: MenuItem
 
     companion object {
         private val TAG = MainActivity::class.java.simpleName
@@ -41,9 +47,57 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setUpRecyclerView()
-        setUpInsert()
         setUpItemTouchHelper()
+        setSupportActionBar(toolbar)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_action_bar, menu)
+        searchItem = menu?.findItem(R.id.action_a_task)!!
+        val searchView = searchItem?.actionView as SearchView
+        searchView.imeOptions = EditorInfo.IME_ACTION_DONE
+        searchView.maxWidth = Integer.MAX_VALUE
+        searchView.queryHint = "Add a Task"
+        searchView.addOnAttachStateChangeListener(object : OnAttachStateChangeListener {
+            override fun onViewDetachedFromWindow(arg0: View) {
+                setItemsVisibility(menu, searchItem, true)
+            }
+
+            override fun onViewAttachedToWindow(arg0: View) {
+                setItemsVisibility(menu, searchItem, false)
+            }
+        })
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(newText: String?): Boolean {
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String): Boolean {
+                searchItem.collapseActionView()
+                taskViewModel.insert(Task(title = query))
+                return false
+            }
+        })
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    private fun setItemsVisibility(menu: Menu, exception: MenuItem, visible: Boolean) {
+        for (i in 0 until menu.size()) {
+            val item = menu.getItem(i)
+            if (item !== exception) item.isVisible = visible
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?) =
+        when (item?.itemId) {
+            R.id.action_favorite -> {
+                Log.i("skt", "action_favorite")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+
 
     override fun onStart() {
         super.onStart()
@@ -95,6 +149,7 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
         userRecyclerView.adapter = recyclerAdapter
 
         userRecyclerView.setOnTouchListener { v, _ ->
+            searchItem.collapseActionView()
             v.hideKeyboard()
             false
         }
@@ -103,16 +158,6 @@ class MainActivity : AppCompatActivity(), ItemUserActionsListener {
     private fun setUpItemTouchHelper() {
         itemTouchHelper = ItemTouchHelper(ItemTouchHeplerCallBack(recyclerAdapter))
         itemTouchHelper.attachToRecyclerView(userRecyclerView)
-    }
-
-    private fun setUpInsert() {
-        insertBtn.setOnClickListener {
-            val text = userNameInput.text.toString()
-            userNameInput.setText("")
-            taskViewModel.insert(Task(title = text))
-            window.decorView.hideKeyboard()
-            window.decorView.clearFocus()
-        }
     }
 
     override fun onItemDrag(viewHolder: RecyclerView.ViewHolder) {
