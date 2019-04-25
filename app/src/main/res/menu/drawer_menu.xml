@@ -1,11 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:id="@+id/show_task_list_action"
+            android:id="@+id/drawer_task_list_item"
             android:icon="@drawable/ic_baseline_list_24px"
             android:title="@string/task_list"/>
     <item
-            android:id="@+id/show_statistic_action"
+            android:id="@+id/drawer_statistic_item"
             android:icon="@drawable/ic_baseline_bar_chart_24px"
             android:title="@string/statistic"/>
 
