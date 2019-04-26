@@ -1,11 +1,9 @@
 package com.example.daoan.simplemvvm.ui.taskstep
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.daoan.simplemvvm.R
 
@@ -26,15 +24,6 @@ class TaskStepFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        (activity as AppCompatActivity)
-            .supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_baseline_arrow_back_24px)
-
-//        (activity as AppCompatActivity)
-//            .supportActionBar?.setDisplayHomeAsUpEnabled(true)
     }
 
 

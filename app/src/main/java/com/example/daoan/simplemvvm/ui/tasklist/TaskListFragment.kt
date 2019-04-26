@@ -7,6 +7,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,7 +18,6 @@ import com.example.daoan.simplemvvm.data.model.RecyclerViewItem
 import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.ui.common.ItemTouchHeplerCallBack
 import com.example.daoan.simplemvvm.ui.common.ItemUserActionsListener
-import com.example.daoan.simplemvvm.ui.taskstep.TaskStepFragment
 import com.example.daoan.simplemvvm.viewmodel.TaskViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
@@ -183,14 +183,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
     }
 
     override fun onShowDetail(task: Task) {
-        fragmentManager?.let {
-            manager ->
-            manager.beginTransaction()
-                .hide(this)
-                .addToBackStack("222")
-                .add(R.id.mainContent, TaskStepFragment.newInstance())
-                .commit()
-        }
+        findNavController().navigate(R.id.action_taskListFragment_to_taskStepFragment)
     }
 
     companion object {
