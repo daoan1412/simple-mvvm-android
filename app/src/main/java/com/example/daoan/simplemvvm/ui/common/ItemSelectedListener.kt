@@ -1,4 +1,4 @@
-package com.example.daoan.simplemvvm.ui.tasklist
+package com.example.daoan.simplemvvm.ui.common
 
 interface ItemSelectedListener {
 //    fun onItemSelected()

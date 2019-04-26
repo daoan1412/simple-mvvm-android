@@ -1,10 +1,10 @@
-package com.example.daoan.simplemvvm.app
+package com.example.daoan.simplemvvm.base
 
 import android.app.Application
 import com.example.daoan.simplemvvm.di.applicationModule
 import io.realm.Realm
-import org.koin.android.ext.android.startKoin
 import io.realm.RealmConfiguration
+import org.koin.android.ext.android.startKoin
 
 
 class BaseApplication : Application() {
@@ -17,7 +17,7 @@ class BaseApplication : Application() {
     private fun setUpRealm() {
         Realm.init(this)
         val config = RealmConfiguration.Builder()
-            .name("myrea2lm.realm")
+            .name("aea2lm.realm")
             .schemaVersion(2)
 //            .inMemory()
             .build()

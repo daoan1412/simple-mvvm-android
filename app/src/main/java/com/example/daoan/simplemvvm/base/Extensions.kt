@@ -1,4 +1,4 @@
-package com.example.daoan.simplemvvm.app
+package com.example.daoan.simplemvvm.base
 
 import android.content.Context
 import android.view.LayoutInflater

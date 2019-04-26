@@ -1,4 +1,4 @@
-package com.example.daoan.simplemvvm.app
+package com.example.daoan.simplemvvm.base
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -7,7 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
 import com.example.daoan.simplemvvm.R
-import com.example.daoan.simplemvvm.StatisticFragment
+import com.example.daoan.simplemvvm.ui.statistic.StatisticFragment
 import com.example.daoan.simplemvvm.ui.tasklist.TaskListFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
-
         toggle = ActionBarDrawerToggle(
             this, draw_layout, toolbar,
             R.string.drawer_open,
@@ -67,7 +66,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         when (item?.itemId) {
-            android.R.id.home -> {
+            R.id.home -> {
                 draw_layout.openDrawer(GravityCompat.START)
                 return true
             }

@@ -1,4 +1,4 @@
-package com.example.daoan.simplemvvm.ui.tasklist
+package com.example.daoan.simplemvvm.ui.common
 
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
