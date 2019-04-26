@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -174,7 +175,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
         taskViewModel.delete(item as Task)
     }
 
-    override fun onItemReorder(items: List<RecyclerViewItem>) {
+    override fun onItemReorder(items: Collection<RecyclerViewItem>) {
         taskViewModel.update(items as List<Task>)
     }
 
@@ -183,7 +184,8 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
     }
 
     override fun onShowDetail(task: Task) {
-        findNavController().navigate(R.id.action_taskListFragment_to_taskStepFragment)
+        val bundle = bundleOf("selectedId" to  task.id)
+        findNavController().navigate(R.id.action_taskListFragment_to_taskStepFragment, bundle)
     }
 
     companion object {

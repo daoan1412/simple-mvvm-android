@@ -10,11 +10,12 @@ import com.example.daoan.simplemvvm.data.model.Step
 import com.example.daoan.simplemvvm.ui.common.ItemSelectedListener
 import com.example.daoan.simplemvvm.ui.common.ItemTouchHelperListener
 import com.example.daoan.simplemvvm.ui.common.ItemUserActionsListener
+import io.realm.RealmList
 import kotlinx.android.synthetic.main.name_item_view_holder.view.*
 import java.util.*
 
 class StepRecyclerViewAdapter(
-    val steps: ArrayList<Step>,
+    val steps: RealmList<Step>,
     private val itemUserActionListener: ItemUserActionsListener
 ) :
     RecyclerView.Adapter<StepRecyclerViewAdapter.ViewHolder>(),
@@ -28,10 +29,10 @@ class StepRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val steps = steps[position]
-        holder.bind(steps)
+        holder.bind(steps!!)
     }
 
-    fun setData(steps: ArrayList<Step>) {
+    fun setData(steps: RealmList<Step>) {
         this.steps.clear()
         this.steps.addAll(steps)
         notifyDataSetChanged()
@@ -57,15 +58,15 @@ class StepRecyclerViewAdapter(
         return true
     }
 
-    private fun reOrderTask(steps: ArrayList<Step>, id1: Int, id2: Int) {
+    private fun reOrderTask(steps: RealmList<Step>, id1: Int, id2: Int) {
         Collections.swap(steps, id1, id2)
-        val temp = steps[id1].order
-        steps[id1].order = steps[id2].order
-        steps[id2].order = temp
+        val temp = steps[id1]!!.order
+        steps[id1]!!.order = steps[id2]!!.order
+        steps[id2]!!.order = temp
     }
 
     override fun onItemDismiss(viewHolder: RecyclerView.ViewHolder, position: Int) {
-        itemUserActionListener.onItemSwipe(steps[position])
+        itemUserActionListener.onItemSwipe(steps[position]!!)
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),

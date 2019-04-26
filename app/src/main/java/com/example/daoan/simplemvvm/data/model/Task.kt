@@ -10,8 +10,8 @@ open class Task(
     var title: String,
     var order: Long = System.currentTimeMillis(),
     var isCompleted: Boolean = false,
-    var step: RealmList<Step>? = null
+    var steps: RealmList<Step> = RealmList()
 ) : RealmObject(), RecyclerViewItem {
-    constructor() : this("", "", 0, false, null)
+    constructor() : this("", "", 0, false, RealmList())
 }
 

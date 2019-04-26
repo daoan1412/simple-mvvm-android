@@ -1,7 +1,6 @@
 package com.example.daoan.simplemvvm.base
 
 import android.os.Bundle
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.Fragment
@@ -36,7 +35,6 @@ class MainActivity : AppCompatActivity() {
         // Set up navigation menu
         nav_view.setupWithNavController(navController)
         setUpDrawerItemSelectedListener()
-
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -51,6 +49,7 @@ class MainActivity : AppCompatActivity() {
             .add(R.id.main_content, statisticFragment)
             .hide(statisticFragment)
             .commit()
+
         nav_view.setNavigationItemSelectedListener { navItem ->
             var fragmentInstance: Fragment? = null
             when (navItem.itemId) {

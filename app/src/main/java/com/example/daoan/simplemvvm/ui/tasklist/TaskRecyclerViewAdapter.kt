@@ -77,7 +77,7 @@ class TaskRecyclerViewAdapter(
         fun bind(task: Task) {
             itemView.complete.isChecked = task.isCompleted
             itemView.nameItem.text = task.title
-            itemView.nameItem.setOnClickListener {
+            itemView.setOnClickListener {
                 itemUserActionListener.onShowDetail(task)
             }
             itemView.handle.setOnTouchListener { v, event ->

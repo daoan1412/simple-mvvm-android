@@ -1,19 +1,21 @@
 package com.example.daoan.simplemvvm.repository
 
 import androidx.annotation.WorkerThread
+import com.example.daoan.simplemvvm.data.model.Step
 import com.example.daoan.simplemvvm.data.model.Task
-import com.vicpin.krealmextensions.delete
-import com.vicpin.krealmextensions.queryAsFlowable
-import com.vicpin.krealmextensions.save
-import com.vicpin.krealmextensions.saveAll
+import com.vicpin.krealmextensions.*
 import io.reactivex.Flowable
+import io.realm.RealmList
 
 interface TaskRepository {
     fun getAllTasks(): Flowable<List<Task>>
-    fun getTaskById(id: String): Flowable<Task>
     suspend fun update(tasks: List<Task>)
     suspend fun insert(task: Task)
     suspend fun delete(task: Task)
+    fun getTaskById(id: String): Flowable<Task>
+    fun insertStepByTaskId(taskId: String, step: Step)
+    fun updateStepsByTaskId(taskId: String, steps: RealmList<Step>)
+    fun delete(taskId: String, step: Step)
 }
 
 class TaskRepositoryImpl : TaskRepository {
@@ -44,6 +46,40 @@ class TaskRepositoryImpl : TaskRepository {
             equalTo("id", id)
         }.filter { tasks -> tasks.size == 1 }
             .map { tasks -> tasks[0] }
+    }
+
+    private fun findTaskById(taskId: String): Task? {
+        return Task().query {
+            equalTo("id", taskId)
+        }.firstOrNull()
+    }
+
+    override fun insertStepByTaskId(taskId: String, step: Step) {
+        val task = findTaskById(taskId)
+
+        task?.let {
+            task.steps.add(step)
+            task.save()
+        }
+    }
+
+    override fun updateStepsByTaskId(taskId: String, steps: RealmList<Step>) {
+        val task = findTaskById(taskId)
+
+        task?.let {
+            task.steps.clear()
+            task.steps.addAll(steps)
+            task.save()
+        }
+    }
+
+    override fun delete(taskId: String, step: Step) {
+        val task = findTaskById(taskId)
+
+        task?.let {
+            task.steps.remove(step)
+            task.save()
+        }
     }
 
 }
