@@ -63,6 +63,7 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchItem.collapseActionView()
                 recyclerAdapter.task.steps.add(Step(description = query))
+                recyclerAdapter.scrollToTop(taskStepRecyclerView)
                 taskViewModel.insertOrUpdate(recyclerAdapter.task)
                 return false
             }
@@ -87,12 +88,7 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
         }
         taskViewModel.getTaskById(selectedId)
         taskViewModel.selectedTask.observe(this, Observer { task ->
-            if (task.steps.size > recyclerAdapter.task.steps.size) {
-                recyclerAdapter.setData(task)
-                recyclerAdapter.scrollToTop(taskStepRecyclerView)
-            } else {
-                recyclerAdapter.setData(task)
-            }
+            recyclerAdapter.setData(task)
         })
     }
 
