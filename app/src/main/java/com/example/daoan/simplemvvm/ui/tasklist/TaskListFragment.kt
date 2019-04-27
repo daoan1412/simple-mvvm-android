@@ -56,12 +56,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         taskViewModel.tasks.observe(this, Observer { tasks ->
-            if (tasks.size > recyclerAdapter.tasks.size) {
-                recyclerAdapter.setData(tasks)
-                recyclerAdapter.scrollToTop(userRecyclerView)
-            } else {
-                recyclerAdapter.setData(tasks)
-            }
+            recyclerAdapter.setData(tasks, taskListRecyclerView)
         })
     }
 
@@ -90,9 +85,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchItem.collapseActionView()
-                val task = Task()
-                task.description = query
-                taskViewModel.insertOrUpdate(listOf(task))
+                taskViewModel.insertOrUpdate(Task(description = query))
                 return false
             }
         })
@@ -123,7 +116,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .switchMap { task ->
                     Observable.fromCallable {
-                        taskViewModel.insertOrUpdate(listOf(task))
+                        taskViewModel.insertOrUpdate(task)
                     }
                 }
                 .subscribe()
@@ -134,15 +127,15 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
         val layoutManager = LinearLayoutManager(context)
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
-        userRecyclerView.layoutManager = layoutManager
+        taskListRecyclerView.layoutManager = layoutManager
         val dividerItemDecoration = DividerItemDecoration(
-            userRecyclerView.context,
+            taskListRecyclerView.context,
             layoutManager.orientation
         )
-        userRecyclerView.addItemDecoration(dividerItemDecoration)
-        userRecyclerView.adapter = recyclerAdapter
+        taskListRecyclerView.addItemDecoration(dividerItemDecoration)
+        taskListRecyclerView.adapter = recyclerAdapter
 
-        userRecyclerView.setOnTouchListener { v, _ ->
+        taskListRecyclerView.setOnTouchListener { v, _ ->
             searchItem.collapseActionView()
             v.hideKeyboard()
             false
@@ -155,7 +148,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
                 recyclerAdapter
             )
         )
-        itemTouchHelper.attachToRecyclerView(userRecyclerView)
+        itemTouchHelper.attachToRecyclerView(taskListRecyclerView)
     }
 
     override fun onItemDrag(viewHolder: RecyclerView.ViewHolder) {
@@ -175,7 +168,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
     }
 
     override fun onShowDetail(task: Task) {
-        val bundle = bundleOf("selectedId" to  task.id)
+        val bundle = bundleOf("selectedId" to task.id)
         findNavController().navigate(R.id.action_taskListFragment_to_taskStepFragment, bundle)
     }
 

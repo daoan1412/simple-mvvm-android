@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.repository.TaskRepository
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -28,7 +29,7 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
     }
 
     private fun getAllTasks() {
-        disposable.add(repo.getAll()
+        disposable.add(repo.getAllTasks()
             .subscribeOn(Schedulers.io())
             .map { tasks -> tasks as ArrayList<Task> }
             .observeOn(AndroidSchedulers.mainThread())
@@ -40,7 +41,12 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
 
     fun getTaskById(id: Long) {
         disposable.add(
-            repo.getById(id).subscribeOn(Schedulers.io())
+            repo.getAllSteps().subscribeOn(Schedulers.io())
+                .flatMap {
+                    Observable.fromCallable {
+                        repo.getTaskById(id)
+                    }
+                }
                 .observeOn(Schedulers.computation())
                 .map { task ->
                     task.steps.sortBy { step -> step.order }
@@ -62,7 +68,6 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
     fun insertOrUpdate(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.insertOrUpdate(task)
-            getTaskById(task.id)
         }
     }
 

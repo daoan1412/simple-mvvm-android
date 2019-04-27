@@ -6,12 +6,12 @@ import com.example.daoan.simplemvvm.data.model.Task_
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
 import io.objectbox.rx.RxQuery
-import io.reactivex.Flowable
 import io.reactivex.Observable
 
 interface TaskRepository {
-    fun getAll(): Observable<List<Task>>
-    fun getById(id: Long): Flowable<Task>
+    fun getAllTasks(): Observable<List<Task>>
+    fun getAllSteps(): Observable<List<Step>>
+    fun getTaskById(id: Long): Task?
     suspend fun insertOrUpdate(tasks: List<Task>)
     suspend fun insertOrUpdate(task: Task)
     suspend fun remove(tasks: List<Task>)
@@ -21,16 +21,19 @@ class TaskRepositoryImpl(boxStore: BoxStore) : TaskRepository {
     private val taskBox = boxStore.boxFor<Task>()
     private val stepBox = boxStore.boxFor<Step>()
 
-    override fun getAll(): Observable<List<Task>> {
+    override fun getAllTasks(): Observable<List<Task>> {
         val query = taskBox.query().order(Task_.order).build()
         return RxQuery.observable(query)
     }
 
-    override fun getById(id: Long): Flowable<Task> {
-        val query = taskBox.query()
-            .equal(Task_.id, id)
-            .build()
-        return RxQuery.flowableOneByOne(query)
+    override fun getAllSteps(): Observable<List<Step>> {
+        val query = stepBox.query().build()
+        return RxQuery.observable(query)
+    }
+
+    override fun getTaskById(id: Long): Task? {
+        val query = taskBox.query().equal(Task_.id, id).build()
+        return query.findFirst()
     }
 
     override suspend fun insertOrUpdate(tasks: List<Task>) {

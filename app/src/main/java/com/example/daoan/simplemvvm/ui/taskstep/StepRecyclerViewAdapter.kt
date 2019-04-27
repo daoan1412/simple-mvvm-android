@@ -29,8 +29,7 @@ class StepRecyclerViewAdapter(
     override fun getItemCount() = task.steps.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val steps = task.steps[position]
-        holder.bind(steps)
+        holder.bind(position)
     }
 
     fun setData(task: Task) {
@@ -75,9 +74,9 @@ class StepRecyclerViewAdapter(
             itemUserActionListener.onItemReorder(task.steps)
         }
 
-        fun bind(step: Step) {
-            itemView.complete.isChecked = step.isCompleted
-            itemView.nameItem.text = step.description
+        fun bind(position: Int) {
+            itemView.complete.isChecked = task.steps[position].isCompleted
+            itemView.nameItem.text = task.steps[position].description
             itemView.handle.setOnTouchListener { v, event ->
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     itemUserActionListener.onItemDrag(this)
@@ -85,8 +84,8 @@ class StepRecyclerViewAdapter(
                 false
             }
             itemView.complete.setOnClickListener {
-                step.isCompleted = !step.isCompleted
-                itemUserActionListener.onItemChecked(step)
+                task.steps[position].isCompleted = !task.steps[position].isCompleted
+                itemUserActionListener.onItemChecked(task.steps[position])
             }
         }
     }

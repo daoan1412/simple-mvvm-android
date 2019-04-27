@@ -31,14 +31,12 @@ class TaskRecyclerViewAdapter(
         holder.bind(task)
     }
 
-    fun setData(tasks: ArrayList<Task>) {
+    fun setData(tasks: ArrayList<Task>, recyclerView: RecyclerView) {
+        val itemInserted = tasks.size > this.tasks.size
         this.tasks.clear()
         this.tasks.addAll(tasks)
         notifyDataSetChanged()
-    }
-
-    fun scrollToTop(recyclerView: RecyclerView) {
-        if (tasks.size > 2) {
+        if (itemInserted) {
             recyclerView.scrollToPosition(tasks.size - 1)
         }
     }

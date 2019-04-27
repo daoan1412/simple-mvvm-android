@@ -1,7 +1,6 @@
 package com.example.daoan.simplemvvm.ui.taskstep
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
@@ -19,7 +18,7 @@ import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.ui.common.ItemTouchHeplerCallBack
 import com.example.daoan.simplemvvm.ui.common.ItemUserActionsListener
 import com.example.daoan.simplemvvm.viewmodel.TaskViewModel
-import kotlinx.android.synthetic.main.fragment_task_list.*
+import kotlinx.android.synthetic.main.fragment_task_step.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -29,11 +28,6 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
     private lateinit var itemTouchHelper: ItemTouchHelper
     lateinit var searchItem: MenuItem
     private var selectedId: Long = 0
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -69,7 +63,6 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchItem.collapseActionView()
                 recyclerAdapter.task.steps.add(Step(description = query))
-                Log.i("skt", recyclerAdapter.task.toString())
                 taskViewModel.insertOrUpdate(recyclerAdapter.task)
                 return false
             }
@@ -96,7 +89,7 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
         taskViewModel.selectedTask.observe(this, Observer { task ->
             if (task.steps.size > recyclerAdapter.task.steps.size) {
                 recyclerAdapter.setData(task)
-                recyclerAdapter.scrollToTop(userRecyclerView)
+                recyclerAdapter.scrollToTop(taskStepRecyclerView)
             } else {
                 recyclerAdapter.setData(task)
             }
@@ -108,15 +101,15 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
         val layoutManager = LinearLayoutManager(context)
         layoutManager.reverseLayout = true
         layoutManager.stackFromEnd = true
-        userRecyclerView.layoutManager = layoutManager
+        taskStepRecyclerView.layoutManager = layoutManager
         val dividerItemDecoration = DividerItemDecoration(
-            userRecyclerView.context,
+            taskStepRecyclerView.context,
             layoutManager.orientation
         )
-        userRecyclerView.addItemDecoration(dividerItemDecoration)
-        userRecyclerView.adapter = recyclerAdapter
+        taskStepRecyclerView.addItemDecoration(dividerItemDecoration)
+        taskStepRecyclerView.adapter = recyclerAdapter
 
-        userRecyclerView.setOnTouchListener { v, _ ->
+        taskStepRecyclerView.setOnTouchListener { v, _ ->
             searchItem.collapseActionView()
             v.hideKeyboard()
             false
@@ -129,7 +122,7 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
                 recyclerAdapter
             )
         )
-        itemTouchHelper.attachToRecyclerView(userRecyclerView)
+        itemTouchHelper.attachToRecyclerView(taskStepRecyclerView)
     }
 
 
@@ -151,7 +144,7 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
     }
 
     override fun onItemChecked(item: RecyclerViewItem) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        taskViewModel.insertOrUpdate(recyclerAdapter.task)
     }
 
     companion object {
