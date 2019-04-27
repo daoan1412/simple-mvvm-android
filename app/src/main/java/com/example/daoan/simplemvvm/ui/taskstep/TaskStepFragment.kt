@@ -70,7 +70,7 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
                 searchItem.collapseActionView()
                 recyclerAdapter.task.steps.add(Step(description = query))
                 Log.i("skt", recyclerAdapter.task.toString())
-                taskViewModel.insertOrUpdate(listOf(recyclerAdapter.task))
+                taskViewModel.insertOrUpdate(recyclerAdapter.task)
                 return false
             }
         })
@@ -139,11 +139,11 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
 
     override fun onItemSwipe(item: RecyclerViewItem) {
         recyclerAdapter.task.steps.remove(item as Step)
-        taskViewModel.insertOrUpdate(listOf(recyclerAdapter.task))
+        taskViewModel.insertOrUpdate(recyclerAdapter.task)
     }
 
     override fun onItemReorder(items: Collection<RecyclerViewItem>) {
-        taskViewModel.update(recyclerAdapter.task.steps)
+        taskViewModel.insertOrUpdate(recyclerAdapter.task)
     }
 
     override fun onShowDetail(task: Task) {

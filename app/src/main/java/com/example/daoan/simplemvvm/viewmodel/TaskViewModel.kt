@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.daoan.simplemvvm.data.model.Step
 import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.repository.TaskRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -57,15 +56,13 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
     fun insertOrUpdate(tasks: List<Task>) {
         viewModelScope.launch(Dispatchers.IO) {
             repo.insertOrUpdate(tasks)
-            if (tasks.size == 1) {
-                getTaskById(tasks[0].id)
-            }
         }
     }
 
-    fun update(steps: List<Step>) {
+    fun insertOrUpdate(task: Task) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.update(steps)
+            repo.insertOrUpdate(task)
+            getTaskById(task.id)
         }
     }
 

@@ -13,8 +13,8 @@ interface TaskRepository {
     fun getAll(): Observable<List<Task>>
     fun getById(id: Long): Flowable<Task>
     suspend fun insertOrUpdate(tasks: List<Task>)
+    suspend fun insertOrUpdate(task: Task)
     suspend fun remove(tasks: List<Task>)
-    suspend fun update(steps: List<Step>)
 }
 
 class TaskRepositoryImpl(boxStore: BoxStore) : TaskRepository {
@@ -37,8 +37,9 @@ class TaskRepositoryImpl(boxStore: BoxStore) : TaskRepository {
         taskBox.put(tasks)
     }
 
-    override suspend fun update(steps: List<Step>) {
-        stepBox.put(steps)
+    override suspend fun insertOrUpdate(task: Task) {
+        taskBox.put(task)
+        stepBox.put(task.steps)
     }
 
     override suspend fun remove(tasks: List<Task>) {

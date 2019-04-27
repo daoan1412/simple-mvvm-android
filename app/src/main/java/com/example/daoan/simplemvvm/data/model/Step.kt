@@ -2,7 +2,6 @@ package com.example.daoan.simplemvvm.data.model
 
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
-import io.objectbox.relation.ToOne
 
 @Entity
 data class Step(
@@ -11,6 +10,4 @@ data class Step(
     var description: String = "",
     var order: Long = System.currentTimeMillis(),
     var isCompleted: Boolean = false
-) : RecyclerViewItem {
-    lateinit var task: ToOne<Task>
-}
+) : RecyclerViewItem

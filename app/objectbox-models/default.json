@@ -25,7 +25,12 @@
           "name": "description"
         }
       ],
-      "relations": []
+      "relations": [
+        {
+          "id": "2:553601283983633629",
+          "name": "steps"
+        }
+      ]
     },
     {
       "id": "2:1338772467683989861",
@@ -47,11 +52,6 @@
         {
           "id": "4:3287749945058928606",
           "name": "isCompleted"
-        },
-        {
-          "id": "5:1234352450999230433",
-          "indexId": "1:921324080086254633",
-          "name": "taskId"
         }
       ],
       "relations": []
@@ -59,14 +59,17 @@
   ],
   "lastEntityId": "2:1338772467683989861",
   "lastIndexId": "1:921324080086254633",
-  "lastRelationId": "1:4765129340230079551",
+  "lastRelationId": "2:553601283983633629",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
   "retiredEntityUids": [],
-  "retiredIndexUids": [],
+  "retiredIndexUids": [
+    921324080086254633
+  ],
   "retiredPropertyUids": [
-    5645809674608918374
+    5645809674608918374,
+    1234352450999230433
   ],
   "retiredRelationUids": [
     4765129340230079551
