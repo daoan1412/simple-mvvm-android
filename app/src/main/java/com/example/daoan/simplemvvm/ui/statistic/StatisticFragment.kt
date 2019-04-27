@@ -27,14 +27,13 @@ class StatisticFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         show.setOnClickListener {
             Log.i("skt", "Hello")
-            taskViewModel.getTaskById("fdd7d91f-e839-47d6-95a9-a88ade1dae1a")
         }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         taskViewModel.selectedTask.observe(this, Observer {
-            task -> Log.i("skt", task.id)
+            task -> Log.i("skt", task.id.toString())
         })
     }
 

@@ -10,7 +10,6 @@ import com.example.daoan.simplemvvm.repository.TaskRepository
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import io.realm.RealmList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -30,7 +29,7 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
     }
 
     private fun getAllTasks() {
-        disposable.add(repo.getAllTasks()
+        disposable.add(repo.getAll()
             .subscribeOn(Schedulers.io())
             .map { tasks -> tasks as ArrayList<Task> }
             .observeOn(AndroidSchedulers.mainThread())
@@ -40,46 +39,40 @@ class TaskViewModel(private val repo: TaskRepository) : ViewModel() {
         )
     }
 
-    fun getTaskById(id: String) {
-        disposable.add(repo.getTaskById(id)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { selectedTask ->
-                _selectedTask.value = selectedTask
+    fun getTaskById(id: Long) {
+        disposable.add(
+            repo.getById(id).subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.computation())
+                .map { task ->
+                    task.steps.sortBy { step -> step.order }
+                    return@map task
+                }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe { task ->
+                    _selectedTask.value = task
+                }
+        )
+    }
+
+    fun insertOrUpdate(tasks: List<Task>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repo.insertOrUpdate(tasks)
+            if (tasks.size == 1) {
+                getTaskById(tasks[0].id)
             }
-        )
-    }
-
-    fun insertStep(selectedId: String, step: Step) {
-        repo.insertStepByTaskId(selectedId, step)
-    }
-
-    fun insert(task: Task) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repo.insert(task)
         }
     }
 
-    fun update(tasks: List<Task>) {
+    fun update(steps: List<Step>) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.update(tasks)
+            repo.update(steps)
         }
     }
 
-    fun delete(task: Task) {
+    fun remove(tasks: List<Task>) {
         viewModelScope.launch(Dispatchers.IO) {
-            repo.delete(task)
+            repo.remove(tasks)
         }
-    }
-
-    fun delete(taskId: String, step: Step) {
-        repo.delete(taskId, step)
-    }
-
-    fun update(taskId: String, steps: RealmList<Step>) {
-        repo.updateStepsByTaskId(
-            taskId, steps
-        )
     }
 
 

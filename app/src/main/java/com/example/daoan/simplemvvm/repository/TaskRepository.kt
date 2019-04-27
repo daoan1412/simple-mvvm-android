@@ -1,85 +1,48 @@
 package com.example.daoan.simplemvvm.repository
 
-import androidx.annotation.WorkerThread
 import com.example.daoan.simplemvvm.data.model.Step
 import com.example.daoan.simplemvvm.data.model.Task
-import com.vicpin.krealmextensions.*
+import com.example.daoan.simplemvvm.data.model.Task_
+import io.objectbox.BoxStore
+import io.objectbox.kotlin.boxFor
+import io.objectbox.rx.RxQuery
 import io.reactivex.Flowable
-import io.realm.RealmList
+import io.reactivex.Observable
 
 interface TaskRepository {
-    fun getAllTasks(): Flowable<List<Task>>
-    suspend fun update(tasks: List<Task>)
-    suspend fun insert(task: Task)
-    suspend fun delete(task: Task)
-    fun getTaskById(id: String): Flowable<Task>
-    fun insertStepByTaskId(taskId: String, step: Step)
-    fun updateStepsByTaskId(taskId: String, steps: RealmList<Step>)
-    fun delete(taskId: String, step: Step)
+    fun getAll(): Observable<List<Task>>
+    fun getById(id: Long): Flowable<Task>
+    suspend fun insertOrUpdate(tasks: List<Task>)
+    suspend fun remove(tasks: List<Task>)
+    suspend fun update(steps: List<Step>)
 }
 
-class TaskRepositoryImpl : TaskRepository {
-    @WorkerThread
-    override suspend fun insert(task: Task) {
-        task.save()
+class TaskRepositoryImpl(boxStore: BoxStore) : TaskRepository {
+    private val taskBox = boxStore.boxFor<Task>()
+    private val stepBox = boxStore.boxFor<Step>()
+
+    override fun getAll(): Observable<List<Task>> {
+        val query = taskBox.query().order(Task_.order).build()
+        return RxQuery.observable(query)
     }
 
-    @WorkerThread
-    override suspend fun update(tasks: List<Task>) {
-        tasks.saveAll()
+    override fun getById(id: Long): Flowable<Task> {
+        val query = taskBox.query()
+            .equal(Task_.id, id)
+            .build()
+        return RxQuery.flowableOneByOne(query)
     }
 
-    @WorkerThread
-    override suspend fun delete(task: Task) {
-        Task().delete { equalTo("id", task.id) }
+    override suspend fun insertOrUpdate(tasks: List<Task>) {
+        taskBox.put(tasks)
     }
 
-    override fun getAllTasks(): Flowable<List<Task>> {
-        return Task().queryAsFlowable {
-            sort("order")
-        }
+    override suspend fun update(steps: List<Step>) {
+        stepBox.put(steps)
     }
 
-    @WorkerThread
-    override fun getTaskById(id: String): Flowable<Task> {
-        return Task().queryAsFlowable {
-            equalTo("id", id)
-        }.filter { tasks -> tasks.size == 1 }
-            .map { tasks -> tasks[0] }
-    }
-
-    private fun findTaskById(taskId: String): Task? {
-        return Task().query {
-            equalTo("id", taskId)
-        }.firstOrNull()
-    }
-
-    override fun insertStepByTaskId(taskId: String, step: Step) {
-        val task = findTaskById(taskId)
-
-        task?.let {
-            task.steps.add(step)
-            task.save()
-        }
-    }
-
-    override fun updateStepsByTaskId(taskId: String, steps: RealmList<Step>) {
-        val task = findTaskById(taskId)
-
-        task?.let {
-            task.steps.clear()
-            task.steps.addAll(steps)
-            task.save()
-        }
-    }
-
-    override fun delete(taskId: String, step: Step) {
-        val task = findTaskById(taskId)
-
-        task?.let {
-            task.steps.remove(step)
-            task.save()
-        }
+    override suspend fun remove(tasks: List<Task>) {
+        taskBox.remove(tasks)
     }
 
 }

@@ -1,17 +1,18 @@
 package com.example.daoan.simplemvvm.data.model
 
-import io.realm.RealmList
-import io.realm.RealmObject
-import io.realm.annotations.PrimaryKey
-import java.util.*
+import io.objectbox.annotation.Backlink
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
+import io.objectbox.relation.ToMany
 
-open class Task(
-    @PrimaryKey var id: String = UUID.randomUUID().toString(),
-    var title: String,
+@Entity
+data class Task(
+    @Id
+    var id: Long = 0,
+    var description: String = "",
     var order: Long = System.currentTimeMillis(),
-    var isCompleted: Boolean = false,
-    var steps: RealmList<Step> = RealmList()
-) : RealmObject(), RecyclerViewItem {
-    constructor() : this("", "", 0, false, RealmList())
+    var isCompleted: Boolean = false
+    ) : RecyclerViewItem {
+    @Backlink(to = "task")
+    lateinit var steps: ToMany<Step>
 }
-

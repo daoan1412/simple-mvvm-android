@@ -1,6 +1,7 @@
 package com.example.daoan.simplemvvm.ui.taskstep
 
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.SearchView
@@ -18,16 +19,16 @@ import com.example.daoan.simplemvvm.data.model.Task
 import com.example.daoan.simplemvvm.ui.common.ItemTouchHeplerCallBack
 import com.example.daoan.simplemvvm.ui.common.ItemUserActionsListener
 import com.example.daoan.simplemvvm.viewmodel.TaskViewModel
-import io.realm.RealmList
 import kotlinx.android.synthetic.main.fragment_task_list.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class TaskStepFragment : Fragment(), ItemUserActionsListener {
     private val taskViewModel: TaskViewModel by viewModel()
-    private val recyclerAdapter = StepRecyclerViewAdapter(RealmList(), this)
+    private val recyclerAdapter = StepRecyclerViewAdapter(Task(), this)
     private lateinit var itemTouchHelper: ItemTouchHelper
     lateinit var searchItem: MenuItem
+    private var selectedId: Long = 0
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,8 +68,9 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchItem.collapseActionView()
-                val taskId = arguments?.getString("selectedId", "")
-                taskViewModel.insertStep(taskId!!, Step(title = query))
+                recyclerAdapter.task.steps.add(Step(description = query))
+                Log.i("skt", recyclerAdapter.task.toString())
+                taskViewModel.insertOrUpdate(listOf(recyclerAdapter.task))
                 return false
             }
         })
@@ -87,16 +89,16 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
         super.onActivityCreated(savedInstanceState)
         setUpRecyclerView()
         setUpItemTouchHelper()
-        taskViewModel.getTaskById(
-            arguments?.getString("selectedId")!!
-        )
+        arguments?.let { args ->
+            selectedId = args.getLong("selectedId", 1)
+        }
+        taskViewModel.getTaskById(selectedId)
         taskViewModel.selectedTask.observe(this, Observer { task ->
-            val steps = task.steps
-            if (steps.size > recyclerAdapter.steps.size) {
-                recyclerAdapter.setData(steps)
+            if (task.steps.size > recyclerAdapter.task.steps.size) {
+                recyclerAdapter.setData(task)
                 recyclerAdapter.scrollToTop(userRecyclerView)
             } else {
-                recyclerAdapter.setData(steps)
+                recyclerAdapter.setData(task)
             }
         })
     }
@@ -136,11 +138,12 @@ class TaskStepFragment : Fragment(), ItemUserActionsListener {
     }
 
     override fun onItemSwipe(item: RecyclerViewItem) {
-        taskViewModel.delete(arguments?.getString("selectedId")!!, item as Step)
+        recyclerAdapter.task.steps.remove(item as Step)
+        taskViewModel.insertOrUpdate(listOf(recyclerAdapter.task))
     }
 
     override fun onItemReorder(items: Collection<RecyclerViewItem>) {
-//        taskViewModel.update(arguments?.getString("selectedId")!!, items as RealmList<Step>)
+        taskViewModel.update(recyclerAdapter.task.steps)
     }
 
     override fun onShowDetail(task: Task) {

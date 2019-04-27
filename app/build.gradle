@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'realm-android'
+apply plugin: 'io.objectbox'
 
 android {
     compileSdkVersion 28
@@ -47,10 +47,10 @@ dependencies {
     // RecyclerView
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
-    //Rx && Realm-extension
-    implementation "com.github.vicpinm:krealmextensions:2.5.0"
+    //Rx
     implementation 'io.reactivex.rxjava2:rxkotlin:2.3.0'
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation "io.objectbox:objectbox-rxjava:$objectboxVersion"
 
     // Navigation
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"

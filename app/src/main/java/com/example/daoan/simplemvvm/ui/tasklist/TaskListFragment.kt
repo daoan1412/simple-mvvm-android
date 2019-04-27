@@ -90,7 +90,9 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
 
             override fun onQueryTextSubmit(query: String): Boolean {
                 searchItem.collapseActionView()
-                taskViewModel.insert(Task(title = query))
+                val task = Task()
+                task.description = query
+                taskViewModel.insertOrUpdate(listOf(task))
                 return false
             }
         })
@@ -103,17 +105,6 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
             if (item !== exception) item.isVisible = visible
         }
     }
-
-//
-//    override fun onOptionsItemSelected(item: MenuItem) =
-//        when (item.itemId) {
-//            R.id.action_favorite -> {
-//                Log.i("skt", "action_favorite")
-//                true
-//            }
-//            else -> super.onOptionsItemSelected(item)
-//        }
-
 
     override fun onStart() {
         super.onStart()
@@ -132,7 +123,7 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
                 .debounce(300, TimeUnit.MILLISECONDS)
                 .switchMap { task ->
                     Observable.fromCallable {
-                        taskViewModel.update(listOf(task))
+                        taskViewModel.insertOrUpdate(listOf(task))
                     }
                 }
                 .subscribe()
@@ -172,11 +163,11 @@ class TaskListFragment : Fragment(), ItemUserActionsListener {
     }
 
     override fun onItemSwipe(item: RecyclerViewItem) {
-        taskViewModel.delete(item as Task)
+        taskViewModel.remove(listOf(item as Task))
     }
 
     override fun onItemReorder(items: Collection<RecyclerViewItem>) {
-        taskViewModel.update(items as List<Task>)
+        taskViewModel.insertOrUpdate(items as List<Task>)
     }
 
     override fun onItemChecked(item: RecyclerViewItem) {
